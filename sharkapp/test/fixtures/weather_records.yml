@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  location: MyString
+  date: 2024-06-27
+  temperature_max: 1.5
+  temperature_min: 1.5
+  precipitation: 1.5
+
+two:
+  location: MyString
+  date: 2024-06-27
+  temperature_max: 1.5
+  temperature_min: 1.5
+  precipitation: 1.5
