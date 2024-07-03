@@ -4,7 +4,10 @@ require 'csv'
 
 class WeatherService
   def self.fetch_weather(location, start_date, end_date)
-    weather_records = WeatherRecord.where(location: location, date: start_date..end_date)
+    start_datetime = start_date.to_date.beginning_of_day
+    end_datetime = end_date.to_date.end_of_day
+
+    weather_records = WeatherRecord.where(location: location, date: start_datetime..end_datetime)
 
     if weather_records.exists?
       return format_weather_data(weather_records)
@@ -23,7 +26,7 @@ class WeatherService
 
     store_weather_data(location, weather_data)
 
-    weather_records = WeatherRecord.where(location: location, date: start_date..end_date)
+    weather_records = WeatherRecord.where(location: location, date: start_datetime..end_datetime)
     format_weather_data(weather_records)
   end
 
@@ -40,27 +43,28 @@ class WeatherService
   end
 
   def self.store_weather_data(location, weather_data)
-    weather_data['hourly']['time'].each_with_index do |time, index|
+    weather_data['hourly']['time'].each_with_index do |time_iso8601, index|
+      timestamp = DateTime.parse(time_iso8601)
       WeatherRecord.create!(
         location: location,
-        date: Date.parse(time),
+        date: timestamp.to_datetime,
         temperature_max: weather_data['hourly']['temperature_2m'][index],
-        temperature_min: weather_data['hourly']['temperature_2m'][index],
         precipitation: weather_data['hourly']['precipitation'][index]
       )
     end
   end
 
   def self.format_weather_data(weather_records)
+    ordered_records = weather_records.order(:date)
     {
       location: weather_records.first.location,
-      start_date: weather_records.minimum(:date),
-      end_date: weather_records.maximum(:date),
+      start_date: ordered_records.first.date.to_date,
+      end_date: ordered_records.last.date.to_date,
       weather_data: {
         hourly: {
-          time: weather_records.pluck(:date),
-          temperature_2m: weather_records.pluck(:temperature_max),
-          precipitation: weather_records.pluck(:precipitation)
+          time: ordered_records.pluck(:date),
+          temperature_2m: ordered_records.pluck(:temperature_max),
+          precipitation: ordered_records.pluck(:precipitation)
         }
       }
     }

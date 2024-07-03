@@ -112,7 +112,7 @@ function WeatherForm() {
               </thead>
               <tbody>
                 {weatherData.weather_data.hourly.time.map((time, index) => (
-                  <tr key={time}>
+                  <tr key={`${time}-${index}`}>
                     <td>{new Date(time).toLocaleString()}</td>
                     <td>{weatherData.weather_data.hourly.temperature_2m[index]}</td>
                     <td>{weatherData.weather_data.hourly.precipitation[index]}</td>

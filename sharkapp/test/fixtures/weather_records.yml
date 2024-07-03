@@ -2,14 +2,12 @@
 
 one:
   location: MyString
-  date: 2024-06-27
+  date: 2024-07-02 20:38:32
   temperature_max: 1.5
-  temperature_min: 1.5
   precipitation: 1.5
 
 two:
   location: MyString
-  date: 2024-06-27
+  date: 2024-07-02 20:38:32
   temperature_max: 1.5
-  temperature_min: 1.5
   precipitation: 1.5
